@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квиз - ЈУ ОШ "Вук С. Караџић"</title>
+    
+    <link rel="stylesheet" href="stil.css">
+
+    <style>
+        /* CSS ЗА НАВИГАЦИЈУ (ако није учитан из stil.css, ово осигурава изглед) */
+        nav a {
+            display: inline-block;
+            margin: 10px;
+            text-decoration: none;
+            color: black;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            nav a {
+                margin: 5px 0;
+                width: 100%;
+                text-align: center;
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+        }
+
+        /* --- СТИЛОВИ ЗА КВИЗ --- */
+        
+        /* Уклоњена љубичаста позадина и центрирање целог екрана */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white; /* Бела позадина као на index.html */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Омотач за квиз да буде центриран као садржај на почетној */
+        .quiz-wrapper {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .container {
+            background: white;
+            /* Смањена сенка и ивице да изгледа чистије */
+            border: 1px solid #eee; 
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            padding: 20px; /* Смањено са 40px */
+        }
+
+        h1.quiz-title {
+            color: #333; /* Промењено из љубичасте у неутралну */
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em; /* Смањен фонт */
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question {
+            font-size: 1.1em; /* Смањено са 1.3em */
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Смањен размак */
+        }
+
+        .option {
+            background: #f9f9f9;
+            border: 1px solid #ddd; /* Тања ивица */
+            border-radius: 5px;
+            padding: 10px 15px; /* Смањено */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95em; /* Смањен фонт опција */
+        }
+
+        .option:hover {
+            background: #e8e8e8;
+        }
+
+        /* Боје за тачно/нетачно задржавамо, али мало блаже */
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px; /* Смањено дугме */
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .progress {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .score {
+            font-size: 2em; /* Смањено */
+            color: #667eea;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ЈУ ОШ "Вук Стефановић Караџић"</h1>
+        <p>Добро дошли на званичну страницу школе</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Почетна</a>
+        <a href="o nama.html">О нама</a>
+        <a href="news.html">Вијести</a> <a href="quiz.html">Квиз</a>
+        <a href="kontakt.html">Контакт</a>
+    </nav>
+
+    <div class="quiz-wrapper">
+        <div class="container">
+            <h1 class="quiz-title">🎮 Квиз </h1>
+            
+            <div id="quiz">
+                <div class="progress">
+                    Питање <span id="current">1</span> од <span id="total">5</span>
+                </div>
+
+                <div class="question-container active" data-question="0">
+                    <div class="question">1. Гдје се налази општина Козарска Дубица?</div>
+                    <div class="options">
+                        <div class="option" data-answer="wrong">У Њемачкој</div>
+                        <div class="option" data-answer="correct">У Републици Српској</div>
+                        <div class="option" data-answer="wrong">У Русији</div>
+                        <div class="option" data-answer="wrong">У Македонији (Стара Србија)</div>
+                    </div>
+                </div>
+
+                <div class="question-container" data-question="1">
+                    <div class="question">2. На којој адреси се налази школа?</div>
+                    <div class="options">
+                        <div class="option" data-answer="wrong">Краља Петра 10</div>
+                        <div class="option" data-answer="correct">Ђакона Авакума 15</div>
+                        <div class="option" data-answer="wrong">Светог Саве 5</div>
+                        <div class="option" data-answer="wrong">Карађорђева 20</div>
+                    </div>
+                </div>
+
+                <div class="question-container" data-question="2">
+                    <div class="question">3. Колико је ученика школу похађало прије отаџбинског рата?</div>
+                    <div class="options">
+                        <div class="option" data-answer="wrong">Око 600</div>
+                        <div class="option" data-answer="wrong">Око 900</div>
+                        <div class="option" data-answer="correct">Преко 1500</div>
+                        <div class="option" data-answer="wrong">Око 2000</div>
+                    </div>
+                </div>
+
+                <div class="question-container" data-question="3">
+                    <div class="question">4. Кад је основана прва "Српска народна школа" у Дубици?</div>
+                    <div class="options">
+                        <div class="option" data-answer="wrong">1920/1921. године</div>
+                        <div class="option" data-answer="wrong">1804/1805. године</div>
+                        <div class="option" data-answer="correct">1856/1857. године</div>
+                        <div class="option" data-answer="wrong">1815/1816. године</div>
+                    </div>
+                </div>
+
+                <div class="question-container" data-question="4">
+                    <div class="question">5. Кад је саграђена већа зграда за потребе цркве и школе?</div>
+                    <div class="options">
+                        <div class="option" data-answer="wrong">1910. године</div>
+                        <div class="option" data-answer="wrong">1840. године</div>
+                        <div class="option" data-answer="correct">1864. године</div>
+                        <div class="option" data-answer="wrong">1895. године</div>
+                    </div>
+                </div>
+
+                <button class="btn" id="nextBtn" disabled>Слиједеће питање</button>
+            </div>
+
+            <div class="result" id="result">
+                <h2>Квиз завршен! 🎉</h2>
+                <div class="score" id="score">0/5</div>
+                <div class="message" id="message"></div>
+                <button class="btn" onclick="location.reload()">Понови квиз</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 ЈУ ОШ "Вук С. Караџић". Сва права задржана.</p>
+    </footer>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        const totalQuestions = 5;
+        let answered = false;
+
+        const questions = document.querySelectorAll('.question-container');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentSpan = document.getElementById('current');
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                if (answered) return;
+
+                const questionContainer = this.closest('.question-container');
+                const options = questionContainer.querySelectorAll('.option');
+                
+                options.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+
+                answered = true;
+                nextBtn.disabled = false;
+
+                options.forEach(opt => {
+                    if (opt.dataset.answer === 'correct') {
+                        opt.classList.add('correct');
+                    }
+                });
+
+                if (this.dataset.answer === 'correct') {
+                    score++;
+                } else {
+                    this.classList.add('wrong');
+                }
+            });
+        });
+
+        nextBtn.addEventListener('click', function() {
+            if (currentQuestion < totalQuestions - 1) {
+                questions[currentQuestion].classList.remove('active');
+                currentQuestion++;
+                questions[currentQuestion].classList.add('active');
+                currentSpan.textContent = currentQuestion + 1;
+                answered = false;
+                nextBtn.disabled = true;
+
+                if (currentQuestion === totalQuestions - 1) {
+                    nextBtn.textContent = 'Прикажи резултат';
+                }
+            } else {
+                showResult();
+            }
+        });
+
+        function showResult() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').classList.add('active');
+            document.getElementById('score').textContent = score + '/' + totalQuestions;
+
+            let message = '';
+            if (score === 5) {
+                message = 'Савршено! Одличан резултат! 🌟';
+            } else if (score >= 3) {
+                message = 'Врло добро! Настави тако! 👍';
+            } else {
+                message = 'Вјежбај још мало! 💪';
+            }
+            document.getElementById('message').textContent = message;
+        }
+    </script>
+</body>
+</html>

@@ -59,3 +59,30 @@
             width: 100%;
             box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2);
         }
+
+/* Stilovi za desktop prikaz */
+nav a {
+    display: inline-block;
+    margin: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+/* Stilovi za mobilne uređaje */
+@media (max-width: 768px) {
+    nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav a {
+        margin: 5px 0;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        background-color: #f2f2f2; /* Možete prilagoditi boju */
+        border: 1px solid #ddd;
+    }
+}
+
